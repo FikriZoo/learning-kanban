@@ -203,23 +203,25 @@
     </form>
   </div>
 </div>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
 <script>
-  // Ganti dengan config yang kamu dapat dari Firebase Console
   const firebaseConfig = {
-    apiKey: "AIzaSy...",
-    authDomain: "project-kamu.firebaseapp.com",
-    projectId: "project-kamu",
-    storageBucket: "project-kamu.appspot.com",
-    messagingSenderId: "...",
-    appId: "..."
+    apiKey: "AIzaSyAGAf4mxEeSVSdETIA7JbryYS1a-79FrsQ",
+    authDomain: "mylearningkanban.firebaseapp.com",
+    projectId: "mylearningkanban",
+    storageBucket: "mylearningkanban.firebasestorage.app",
+    messagingSenderId: "952840994218",
+    appId: "1:952840994218:web:74c16a5d84c32ccf2e3fd3",
+    measurementId: "G-JLMCH8FV9R"
   };
-  
+
+  // Inisialisasi Firebase (Gunakan format compat)
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 </script>
+
 <script src="app.js"></script>
 </body>
 </html>
