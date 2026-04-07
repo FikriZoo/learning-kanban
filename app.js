@@ -22,25 +22,22 @@ let draggedId   = null;
 let editingTaskId = null;
 
 // ---- HELPERS ----
-function uid() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-}
-
 async function save() {
-  // 1. Tetap simpan di LocalStorage (sebagai backup offline)
+  // 1. Ini simpan ke memori laptop (tetap pertahankan)
   localStorage.setItem('kanban_tasks', JSON.stringify(tasks));
   localStorage.setItem('kanban_notes', JSON.stringify(notes));
 
-  // 2. Kirim ke Firebase Firestore
+  // 2. INI BAGIAN PENTINGNYA: Simpan ke Database Online (Cloud)
+  // Nama "learning_data" dan "user_1" ini bebas, tapi harus konsisten
   try {
     await db.collection("learning_data").doc("user_1").set({
       tasks: tasks,
       notes: notes,
       lastUpdated: Date.now()
     });
-    console.log("✓ Synced to Cloud");
+    console.log("✓ Data Berhasil Sinkron ke Cloud!");
   } catch (error) {
-    console.error("Firebase Error:", error);
+    console.error("Gagal Sinkron ke Firebase:", error);
   }
 }
 
