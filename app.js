@@ -2,7 +2,7 @@
   //  PERSONAL LEARNING KANBAN — APP LOGIC
   //  Data: LocalStorage  |  Drag-and-drop: HTML5
   // =============================================
-
+const uid = () => Math.random().toString(36).substring(2, 11);
   // ---- STATE ----
   let tasks = [];
 let notes = [];
