@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mindful Curator – Personal Learning Kanban</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <span class="brand-icon">✦</span>
+    <div>
+      <div class="brand-title">The Mindful Curator</div>
+      <div class="brand-sub">Personal Learning Journey</div>
+    </div>
+  </div>
+
+  <button class="btn-add-note" onclick="openNoteModal()">
+    <span>+</span> Add Note
+  </button>
+
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item active" onclick="setView('dashboard', this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a href="#" class="nav-item" onclick="setView('all', this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      All Tasks
+    </a>
+    <a href="#" class="nav-item" onclick="setView('inprogress', this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      In Progress
+    </a>
+    <a href="#" class="nav-item" onclick="setView('done', this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+      Completed
+    </a>
+    <a href="#" class="nav-item" onclick="setView('notes', this)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Notes/Resources
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-avatar">A</div>
+    <div>
+      <div class="user-name">Alex Curator</div>
+      <div class="user-plan">Premium Plan</div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+  <header class="topbar">
+    <h1 class="page-title" id="page-title">Dashboard</h1>
+    <div class="topbar-right">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Search your tasks..." oninput="renderAll()">
+      </div>
+      <button class="icon-btn" title="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+      <button class="icon-btn" title="Settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- KANBAN VIEW -->
+  <div class="board-view" id="view-dashboard">
+    <div class="board" id="board"></div>
+  </div>
+
+  <!-- ALL TASKS VIEW -->
+  <div class="list-view hidden" id="view-all">
+    <div class="list-container" id="list-all"></div>
+  </div>
+
+  <!-- IN PROGRESS VIEW -->
+  <div class="list-view hidden" id="view-inprogress">
+    <div class="list-container" id="list-inprogress"></div>
+  </div>
+
+  <!-- DONE VIEW -->
+  <div class="list-view hidden" id="view-done">
+    <div class="list-container" id="list-done"></div>
+  </div>
+
+  <!-- NOTES VIEW -->
+  <div class="list-view hidden" id="view-notes">
+    <div class="notes-grid" id="notes-grid"></div>
+    <div style="margin-top:1.5rem; text-align:center;">
+      <button class="btn-add-note-inline" onclick="openNoteModal()">+ Add New Note</button>
+    </div>
+  </div>
+</main>
+
+<!-- TASK MODAL -->
+<div class="modal-overlay hidden" id="taskModalOverlay" onclick="closeModal('taskModal', this)">
+  <div class="modal" id="taskModal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 id="taskModalTitle">Add New Task</h2>
+      <button class="modal-close" onclick="closeModal('taskModal')">✕</button>
+    </div>
+    <form id="taskForm" onsubmit="saveTask(event)">
+      <input type="hidden" id="taskId">
+      <div class="form-group">
+        <label>Judul Materi *</label>
+        <input type="text" id="taskTitle" placeholder="e.g. Advanced CSS Grid Layouts" required>
+      </div>
+      <div class="form-group">
+        <label>Deskripsi</label>
+        <textarea id="taskDesc" placeholder="Deskripsi singkat materi..." rows="3"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Prioritas</label>
+          <select id="taskPriority">
+            <option value="HIGH">High</option>
+            <option value="MEDIUM" selected>Medium</option>
+            <option value="LOW">Low</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="taskStatus">
+            <option value="todo">To Do</option>
+            <option value="inprogress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Link Dokumentasi / Sumber Belajar</label>
+        <input type="url" id="taskLink" placeholder="https://...">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="closeModal('taskModal')">Batal</button>
+        <button type="submit" class="btn-save">Simpan Task</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay hidden" id="detailModalOverlay" onclick="closeModal('detailModal', this)">
+  <div class="modal modal-wide" id="detailModal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 id="detailTitle"></h2>
+      <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+    </div>
+    <div class="detail-content">
+      <div class="detail-meta" id="detailMeta"></div>
+      <p class="detail-desc" id="detailDesc"></p>
+      <div class="detail-actions" id="detailActions"></div>
+      <div class="detail-progress" id="detailProgress"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTE MODAL -->
+<div class="modal-overlay hidden" id="noteModalOverlay" onclick="closeModal('noteModal', this)">
+  <div class="modal" id="noteModal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Add Note / Resource</h2>
+      <button class="modal-close" onclick="closeModal('noteModal')">✕</button>
+    </div>
+    <form id="noteForm" onsubmit="saveNote(event)">
+      <input type="hidden" id="noteId">
+      <div class="form-group">
+        <label>Judul *</label>
+        <input type="text" id="noteTitle" placeholder="e.g. React Documentation" required>
+      </div>
+      <div class="form-group">
+        <label>Link *</label>
+        <input type="url" id="noteLink" placeholder="https://..." required>
+      </div>
+      <div class="form-group">
+        <label>Deskripsi (opsional)</label>
+        <textarea id="noteDesc" placeholder="Catatan singkat..." rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Kategori</label>
+        <select id="noteCategory">
+          <option value="GitHub">GitHub</option>
+          <option value="Docs">Documentation</option>
+          <option value="Article">Article</option>
+          <option value="Video">Video</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="closeModal('noteModal')">Batal</button>
+        <button type="submit" class="btn-save">Simpan Note</button>
+      </div>
+    </form>
+  </div>
+</div>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // Ganti dengan config yang kamu dapat dari Firebase Console
+  const firebaseConfig = {
+    apiKey: "AIzaSy...",
+    authDomain: "project-kamu.firebaseapp.com",
+    projectId: "project-kamu",
+    storageBucket: "project-kamu.appspot.com",
+    messagingSenderId: "...",
+    appId: "..."
+  };
+  
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+<script src="app.js"></script>
+</body>
+</html>
