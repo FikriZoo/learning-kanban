@@ -23,21 +23,22 @@ let editingTaskId = null;
 
 // ---- HELPERS ----
 async function save() {
-  // 1. Ini simpan ke memori laptop (tetap pertahankan)
+  // Simpan ke LocalStorage (untuk backup cepat di browser ini)
   localStorage.setItem('kanban_tasks', JSON.stringify(tasks));
   localStorage.setItem('kanban_notes', JSON.stringify(notes));
 
-  // 2. INI BAGIAN PENTINGNYA: Simpan ke Database Online (Cloud)
-  // Nama "learning_data" dan "user_1" ini bebas, tapi harus konsisten
-  try {
-    await db.collection("learning_data").doc("user_1").set({
-      tasks: tasks,
-      notes: notes,
-      lastUpdated: Date.now()
-    });
-    console.log("✓ Data Berhasil Sinkron ke Cloud!");
-  } catch (error) {
-    console.error("Gagal Sinkron ke Firebase:", error);
+  // KIRIM KE FIREBASE (Ini yang bikin sinkron antar browser/HP)
+  if (typeof db !== 'undefined') {
+    try {
+      await db.collection("learning_data").doc("user_1").set({
+        tasks: tasks,
+        notes: notes,
+        lastUpdated: Date.now()
+      });
+      console.log("✓ Berhasil sinkron ke Cloud!");
+    } catch (error) {
+      console.error("Gagal sinkron ke Firebase:", error);
+    }
   }
 }
 
@@ -407,17 +408,15 @@ async function loadDataFromCloud() {
       const data = doc.data();
       tasks = data.tasks || [];
       notes = data.notes || [];
-      renderAll(); 
-      console.log("✓ Data loaded from Cloud");
-    } else {
-      // Jika di Cloud belum ada data, gambar data default/lokal
-      renderAll();
+      console.log("✓ Data dimuat dari Cloud");
     }
+    // Setelah data dari cloud diambil (atau gagal), baru gambar UI-nya
+    renderAll(); 
   } catch (error) {
-    console.log("Loading error:", error);
-    renderAll(); // Tetap render meskipun error
+    console.log("Error loading cloud data:", error);
+    renderAll();
   }
 }
 
-// Jalankan pengambilan data
+// Jalankan fungsi load
 loadDataFromCloud();
